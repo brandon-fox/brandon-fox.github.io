@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base title={post.data.title} description={post.data.description}>
+  <article class="article">
+    <header>
+      <h1>{post.data.title}</h1>
+      <p>
+        <time datetime={post.data.date.toISOString().slice(0, 10)}>{fmt(post.data.date)}</time>
+        {post.data.updated ? <span> · updated <time datetime={post.data.updated.toISOString().slice(0, 10)}>{fmt(post.data.updated)}</time></span> : null}
+        · Brandon Fox
+      </p>
+    </header>
+    <Content />
+    <hr style="margin-top: 2.5rem" />
+    <p class="muted" style="margin-top: 1rem">
+      Found a mistake? <a href={`https://github.com/brandon-fox/brandon-fox.github.io/edit/main/src/content/writing/${post.id}.md`}>Edit this essay on GitHub.</a>
+    </p>
+  </article>
+</Base>

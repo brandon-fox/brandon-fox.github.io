@@ -1,0 +1,164 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const drafts = (await getCollection('writing', ({ data }) => data.draft)).length;
+
+const work = [
+  {
+    name: 'First-ADE',
+    href: 'https://github.com/First-ADE',
+    status: 'live, in use on my repositories',
+    live: true,
+    what:
+      'The method, as a repository. Nine falsifiable axioms, the validator that enforces them, a reusable GitHub Action so any repository can adopt them in one workflow step, and a five-minute quickstart with a passing and a failing example.',
+    read: [
+      { label: 'AXIOMS.md', href: 'https://github.com/First-ADE/.github/blob/main/AXIOMS.md' },
+      { label: 'the validator', href: 'https://github.com/First-ADE/.github/blob/main/scripts/validate_axioms.sh' },
+      { label: 'the quickstart', href: 'https://github.com/First-ADE/first-ade/tree/main/examples/quickstart' },
+    ],
+  },
+  {
+    name: 'alos',
+    href: 'https://github.com/brandon-fox/alos',
+    status: 'in development, spec ahead of code',
+    live: false,
+    what:
+      'A local-first autonomous agent runtime, built spec-first: 28 specifications, 16 architecture decision records, Gherkin acceptance files, and a traceability table that shows which specifications have a matching test and which do not yet.',
+    read: [
+      { label: 'traceability table', href: 'https://github.com/brandon-fox/alos/blob/main/docs/traceability.md' },
+      { label: 'decision records', href: 'https://github.com/brandon-fox/alos/tree/main/docs/adr' },
+    ],
+  },
+  {
+    name: 'Vindicta Platform',
+    href: 'https://github.com/vindicta-platform',
+    status: 'design record, never launched',
+    live: false,
+    what:
+      'A provably fair tabletop wargaming platform designed in the open: auditable dice, a hash-chained event ledger, a battle notation. The product was not built. The specifications and decisions stay public as a worked example of how I design before I build, and of what it looks like to stop.',
+    read: [
+      { label: 'foundation', href: 'https://github.com/vindicta-platform/vindicta-foundation' },
+      { label: 'specs', href: 'https://github.com/vindicta-platform/specs' },
+    ],
+  },
+];
+
+const axioms = [
+  { rule: 'The repository says what it is.', check: 'README.md and LICENSE exist.' },
+  { rule: 'Every shell script declares its shell.', check: 'The first line of each script in scripts/ is a bash or sh shebang.' },
+  { rule: 'Every shell script is runnable as committed.', check: 'Git mode is 100755, not whatever the last checkout left.' },
+  { rule: 'Workflow files parse.', check: 'Spaces, not tabs; a jobs block is present.' },
+  { rule: 'CI passes before anything merges.', check: 'Branch protection on main; the validator records that it cannot check this from inside a run.' },
+  { rule: 'No conflict is left half-resolved.', check: 'No <<<<<<< or >>>>>>> markers anywhere in the tree.' },
+  { rule: 'Every commit is signed.', check: 'Each commit in the branch under review carries a signature header.' },
+  { rule: 'The work is mine and it is free.', check: 'LICENSE is MIT in my name; README has an Independence section.' },
+  { rule: 'The README is honest about status.', check: 'Line one names the project; a Status line follows within ten lines.' },
+];
+---
+
+<Base
+  title="Brandon Fox — backend and platform engineer"
+  description="Backend and platform engineer. I build systems where the spec is the truth, the invariants are enforced by CI, and all of it is public. Axiom-Driven Engineering, personal projects, writing."
+>
+  <section class="hero" aria-labelledby="thesis">
+    <div>
+      <h1 id="thesis">Backend and platform engineer. I build systems where the spec is the truth, the invariants are enforced by CI, and all of it is public.</h1>
+      <p class="lede">
+        I call the practice Axiom-Driven Engineering: write down what must never break, give each rule a check, run the check on every commit. The method, the code and the mistakes on this site are all personal work, in the open.
+      </p>
+    </div>
+    <figure class="spec" aria-label="A Gherkin scenario describing how I work">
+      <div class="spec-head">
+        <span class="dot" aria-hidden="true"></span>
+        <span>ade-axioms</span>
+        <span class="state">passing</span>
+      </div>
+      <pre><code><span class="kw">Feature:</span> a change lands in my repository
+
+  <span class="kw">Scenario:</span> the invariant comes before the code
+    <span class="kw">Given</span> a spec that says what must never break
+    <span class="kw">And</span> a check that fails when it does
+    <span class="kw">When</span> the commit is pushed
+    <span class="kw">Then</span> CI runs the check
+    <span class="kw">And</span> the build fails before the mistake ships</code></pre>
+    </figure>
+  </section>
+
+  <section class="section" id="work" aria-labelledby="work-h">
+    <h2 id="work-h">Work</h2>
+    <p class="muted">Three repositories, chosen because each shows a different part of the method: the rules, a system built under them, and a design that was stopped on purpose.</p>
+    <ul class="entries">
+      {
+        work.map((w) => (
+          <li class="entry">
+            <div>
+              <h3>
+                <a href={w.href}>{w.name}</a>
+              </h3>
+              <span class:list={['status', { live: w.live }]}>{w.status}</span>
+            </div>
+            <div>
+              <p>{w.what}</p>
+              <p class="read">
+                Read:{' '}
+                {w.read.map((r, i) => (
+                  <>
+                    <a href={r.href}>{r.label}</a>
+                    {i < w.read.length - 1 ? ', ' : ''}
+                  </>
+                ))}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section" id="method" aria-labelledby="method-h">
+    <h2 id="method-h">Method</h2>
+    <p>
+      A rule nobody can check is a hope. Each axiom below is one sentence and one check, and the check is what makes it an axiom. The set is deliberately small: the point is that it is enforced on every commit, not that it is complete. A repository adopts the whole set with one workflow step, through{' '}
+      <a href="https://github.com/First-ADE/.github">First-ADE</a>.
+    </p>
+    <ol class="axioms">
+      {
+        axioms.map((a) => (
+          <li>
+            <span>
+              {a.rule}
+              <span class="check">{a.check}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section" id="writing" aria-labelledby="writing-h">
+    <h2 id="writing-h">Writing</h2>
+    {
+      posts.length > 0 ? (
+        <ul class="posts">
+          {posts.slice(0, 5).map((p) => (
+            <li>
+              <a href={`/writing/${p.id}/`}>{p.data.title}</a>
+              <time datetime={p.data.date.toISOString().slice(0, 10)}>
+                {p.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </time>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="muted">
+          Nothing published yet. {drafts > 0 ? `${drafts} essay${drafts === 1 ? ' is' : 's are'} in draft and will go up once ${drafts === 1 ? 'it has' : 'they have'} been through my own edit. ` : ''}
+          Writing here will be about correctness, specifications, and what it costs to enforce a rule rather than hope for it.
+        </p>
+      )
+    }
+  </section>
+</Base>
