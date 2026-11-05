@@ -1,0 +1,25 @@
+{
+  "name": "brandon-fox.github.io",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal site of Brandon Fox: backend and platform engineering, Axiom-Driven Engineering, writing.",
+  "author": "Brandon Fox <bfoxtrotfarm@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "node scripts/check-frontmatter.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/jetbrains-mono": "^5.2.5",
+    "@fontsource-variable/source-serif-4": "^5.2.5",
+    "astro": "^7.4.6"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

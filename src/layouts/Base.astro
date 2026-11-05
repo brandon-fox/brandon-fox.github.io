@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/#work', label: 'Work', match: '/' },
+  { href: '/#method', label: 'Method', match: '/' },
+  { href: '/writing/', label: 'Writing', match: '/writing' },
+  { href: '/about/', label: 'About', match: '/about' },
+];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = path === '/' ? title : `${title} — Brandon Fox`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Brandon Fox" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#f2f4f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1419" media="(prefers-color-scheme: dark)" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="frame">
+        <a class="site-name" href="/">Brandon Fox</a>
+        <nav class="site-nav" aria-label="Site">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={item.match !== '/' && path.startsWith(item.match) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="frame">
+        <slot />
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="frame">
+        <div class="links">
+          <a href="https://github.com/brandon-fox">GitHub</a>
+          <a href="https://github.com/First-ADE">First-ADE</a>
+          <a href="https://www.linkedin.com/in/brandonlouisfox">LinkedIn</a>
+          <a href="mailto:bfoxtrotfarm@gmail.com">Email</a>
+          <a href="https://github.com/brandon-fox/brandon-fox.github.io">Source of this site</a>
+        </div>
+        <p>Views, writing and code here are my own and do not represent my employer, past or present.</p>
+        <p>© {new Date().getFullYear()} Brandon Fox. Text and code on this site are MIT licensed unless a page says otherwise.</p>
+      </div>
+    </footer>
+  </body>
+</html>

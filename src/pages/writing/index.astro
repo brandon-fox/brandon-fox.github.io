@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const drafts = await getCollection('writing', ({ data }) => data.draft);
+---
+
+<Base title="Writing" description="Essays by Brandon Fox on correctness, specifications, and engineering in the open.">
+  <h1>Writing</h1>
+  <p class="muted">Essays on correctness, specifications, and what it costs to enforce a rule instead of hoping for it. Each one is Markdown in the open: the source, the edits and the front-matter check are all in <a href="https://github.com/brandon-fox/brandon-fox.github.io/tree/main/src/content/writing">the repository</a>.</p>
+
+  {
+    posts.length > 0 ? (
+      <ul class="posts">
+        {posts.map((p) => (
+          <li>
+            <a href={`/writing/${p.id}/`}>{p.data.title}</a>
+            <time datetime={p.data.date.toISOString().slice(0, 10)}>
+              {p.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            <p>{p.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="empty">
+        <p>Nothing published yet.</p>
+        {drafts.length > 0 ? (
+          <p class="muted">
+            In draft: {drafts.map((d) => d.data.title).join('; ')}. A draft goes up when it has been through my own edit, not before.
+          </p>
+        ) : null}
+      </div>
+    )
+  }
+</Base>
