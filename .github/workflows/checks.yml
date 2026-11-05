@@ -37,6 +37,7 @@ jobs:
           args: >-
             --no-progress
             --root-dir ${{ github.workspace }}/dist
+            --remap 'https://brandon-fox.github.io/ file://${{ github.workspace }}/dist/'
             --exclude 'linkedin\.com'
             --exclude 'mailto:'
             --exclude-path dist/_astro
