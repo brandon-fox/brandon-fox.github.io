@@ -17,6 +17,14 @@ The test for a candidate rule is the same test a scientist applies to a hypothes
 
 This is why I keep the set small. My current set has nine. They are mostly boring: required files exist, shell scripts have a shebang and are executable as committed, workflow YAML parses, no conflict markers survive a merge, commits are signed, the license is in my name and the README says the work is independent, the README's first line says what the project is and a status line follows within ten lines. Nothing clever. The point is not that these nine are the right nine. The point is that every one of them is enforced on every pull request across every repository I own, by one workflow step, and that the enforcement is itself public.
 
+## One axiom, end to end
+
+Take the dullest one: every shell script under `scripts/` is executable as committed. The sentence is A3 in [AXIOMS.md](https://github.com/First-ADE/.github/blob/main/AXIOMS.md). The check is a short loop in bash: for each `scripts/*.sh`, ask `git ls-files -s` for the file's mode, pass on `100755`, fail on anything else. It reads the git index rather than the working tree, because the working tree is what my machine says and the index is what everyone else will get.
+
+It has failed. In May 2026 [a pull request](https://github.com/First-ADE/.github/pull/19) added a script without the bit set. The check said so, and the pull request merged anyway, because nothing yet required the check to pass. [The fix](https://github.com/First-ADE/.github/pull/20) landed five minutes later and did two things: it set the bit, and it added A5, which says CI must pass before merge and is enforced by branch protection rather than by the script. A3 had caught the mistake. What was missing was a rule that made the catch binding.
+
+That is the pattern I want to show. The axiom is one sentence. The check is small and boring. The failure is real and dated, and the response to it is not a note to be more careful but another axiom. Every link in that chain is in a public repository, so you can check my account of it against the commits.
+
 ## Spec before code
 
 The same idea, one level up, is why I write the specification before the implementation. The spec is the truth; the code is an attempt to reproduce it. When they disagree, the first question is whether the spec is wrong, and only then whether the code is.
