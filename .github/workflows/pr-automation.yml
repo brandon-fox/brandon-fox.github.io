@@ -1,0 +1,33 @@
+name: PR Automation
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled]
+  push:
+    branches: [main]
+
+concurrency:
+  group: pr-automation-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.event_name == 'pull_request'
+    uses: brandon-fox/.github/.github/workflows/pr-queue-rebase.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
+    with:
+      mode: auto-merge
+    secrets:
+      token: ${{ secrets.PR_QUEUE_TOKEN }}
+
+  rebase-next:
+    if: github.event_name == 'push'
+    uses: brandon-fox/.github/.github/workflows/pr-queue-rebase.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
+    with:
+      mode: rebase-next
+    secrets:
+      token: ${{ secrets.PR_QUEUE_TOKEN }}
