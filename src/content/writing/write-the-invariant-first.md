@@ -51,4 +51,4 @@ It also does not replace judgment. The axioms catch the mistakes I have already 
 
 If you take one thing from this: the next time you write a rule in a document, ask what would fail if it were broken. If the answer is "nothing", you have not written a rule yet.
 
-I keep mine, with their checks, at [First-ADE](https://github.com/First-ADE). Every one of them has failed on me at least once. That is how I know they are real.
+I keep mine, with their checks, at [First-ADE](https://github.com/brandon-fox/first-ade). Every one of them has failed on me at least once. That is how I know they are real.
