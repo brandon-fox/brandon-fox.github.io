@@ -15,6 +15,10 @@ permissions:
   contents: read
 
 jobs:
+  pr-size:
+    if: github.event_name == 'pull_request'
+    uses: brandon-fox/.github/.github/workflows/pr-size-guard.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
+
   axioms:
     uses: brandon-fox/.github/.github/workflows/ade-axioms.yml@595a8111464a72b0d27e3e7391dcc713f002a73a # main
 
