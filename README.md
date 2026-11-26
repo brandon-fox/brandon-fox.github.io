@@ -1,6 +1,6 @@
 # brandon-fox.github.io
 
-> **Status:** live at https://brandon-fox.github.io — personal site, maintained; custom domain pending.
+> **Status:** live at https://brandonlouisfox.dev (also served at https://brandon-fox.github.io) — personal site, maintained.
 
 The source of my personal site: who I am as an engineer, the method I work by (Axiom-Driven Engineering), the projects that demonstrate it, and what I write.
 
