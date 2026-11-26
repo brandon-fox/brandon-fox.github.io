@@ -17,6 +17,11 @@ permissions:
 jobs:
   pr-size:
     if: github.event_name == 'pull_request'
+    # The reusable guard reads the PR's diff; without this grant the whole
+    # workflow fails at startup and no check runs at all.
+    permissions:
+      contents: read
+      pull-requests: read
     uses: brandon-fox/.github/.github/workflows/pr-size-guard.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
 
   axioms:
