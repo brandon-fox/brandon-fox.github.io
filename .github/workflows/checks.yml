@@ -16,7 +16,9 @@ permissions:
 
 jobs:
   pr-size:
-    if: github.event_name == 'pull_request'
+    # Also runs on workflow_dispatch so a signed-rebase push gets this required
+    # check; the guard passes when there is no PR diff to read.
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     # The reusable guard reads the PR's diff; without this grant the whole
     # workflow fails at startup and no check runs at all.
     permissions:

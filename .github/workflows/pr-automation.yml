@@ -6,28 +6,47 @@ on:
     types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled]
   push:
     branches: [main]
+  schedule:
+    # Nightly sweep catches anything a push-triggered run missed.
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+    inputs:
+      pr-numbers:
+        description: Only rebase these PRs (comma or space separated). Empty means all.
+        required: false
+        default: ''
 
 concurrency:
-  group: pr-automation-${{ github.ref }}
-  cancel-in-progress: true
+  group: pr-automation-${{ github.event_name == 'pull_request' && github.ref || 'rebase' }}
+  # Rebase runs queue instead of cancelling, so a half-finished rebase is never cut off.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   auto-merge:
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: write
+      pull-requests: write
     uses: brandon-fox/.github/.github/workflows/pr-queue-rebase.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
     with:
       mode: auto-merge
     secrets:
       token: ${{ secrets.PR_QUEUE_TOKEN }}
 
-  rebase-next:
-    if: github.event_name == 'push'
-    uses: brandon-fox/.github/.github/workflows/pr-queue-rebase.yml@093fbcf217975354790f21e30f7ce4e4061d35c2 # main
+  rebase:
+    if: github.event_name != 'pull_request'
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/signed-rebase.yml
     with:
-      mode: rebase-next
+      ci-workflows: checks.yml
+      pr-numbers: ${{ inputs.pr-numbers || '' }}
+      app-id: ${{ vars.REBASE_APP_ID || '' }}
     secrets:
-      token: ${{ secrets.PR_QUEUE_TOKEN }}
+      app-private-key: ${{ secrets.REBASE_APP_PRIVATE_KEY }}
