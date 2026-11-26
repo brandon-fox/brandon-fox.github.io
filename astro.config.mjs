@@ -2,10 +2,11 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Served from GitHub Pages at the account root until a custom domain is attached.
-// When brandonfox.dev is live: set site to 'https://brandonfox.dev' and add public/CNAME.
+// Served from GitHub Pages with brandonlouisfox.dev attached as the custom domain
+// (Settings > Pages). Deploys run through a custom Actions workflow, so no CNAME file
+// is needed: GitHub ignores one in that mode.
 export default defineConfig({
-  site: 'https://brandon-fox.github.io',
+  site: 'https://brandonlouisfox.dev',
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   build: {
